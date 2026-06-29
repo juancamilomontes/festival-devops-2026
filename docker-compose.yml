@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+
+  # ─────────────────────────────────────────
+  # SERVICIO FRONTEND — Nginx sirve la landing
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: festival-frontend
+    ports:
+      - "8080:80"
+    networks:
+      - festival-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # SERVICIO BACKEND — API Flask
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: festival-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    networks:
+      - festival-network
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # SERVICIO DATABASE — MySQL persistente
+  # ─────────────────────────────────────────
+  db:
+    image: mysql:8.0
+    container_name: festival-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - festival-db-data:/var/lib/mysql
+    networks:
+      - festival-network
+    restart: unless-stopped
+
+# ─────────────────────────────────────────
+# RED PERSONALIZADA
+# ─────────────────────────────────────────
+networks:
+  festival-network:
+    driver: bridge
+    name: festival-network
+
+# ─────────────────────────────────────────
+# VOLÚMENES — Persistencia de datos MySQL
+# ─────────────────────────────────────────
+volumes:
+  festival-db-data:
+    name: festival-db-data

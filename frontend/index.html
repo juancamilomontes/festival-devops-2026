@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacific DevOps Music Fest 2026</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <h1>🎵 Pacific DevOps Music Fest</h1>
+      <p class="fecha">📅 15 de Agosto, 2026 — Medellín, Colombia</p>
+    </div>
+  </header>
+
+  <section class="artistas">
+    <h2>🎤 Artistas del Festival</h2>
+    <div class="grid-artistas" id="artistas-container">
+      <div class="card-artista">
+        <span class="emoji">🎸</span>
+        <h3>The Linux Penguins</h3>
+        <p>Rock alternativo</p>
+      </div>
+      <div class="card-artista">
+        <span class="emoji">🥁</span>
+        <h3>Docker Beats</h3>
+        <p>Electronic / EDM</p>
+      </div>
+      <div class="card-artista">
+        <span class="emoji">🎹</span>
+        <h3>Kubernetes Flow</h3>
+        <p>Jazz fusión</p>
+      </div>
+      <div class="card-artista">
+        <span class="emoji">🎺</span>
+        <h3>Git & Roll</h3>
+        <p>Pop rock</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="info-api">
+    <h2>📡 Info del Concierto (API)</h2>
+    <div id="api-data" class="api-box">
+      <p class="cargando">Cargando información...</p>
+    </div>
+  </section>
+
+  <section class="tickets">
+    <h2>🎟️ ¡No te lo pierdas!</h2>
+    <p>Entradas limitadas. Precios desde $80.000 COP.</p>
+    <a href="#" class="btn-tickets">Comprar Tickets</a>
+  </section>
+
+  <footer>
+    <p>Pacific DevOps Music Fest 2026 — Construido con Docker Compose 🐳</p>
+  </footer>
+
+  <script>
+    fetch('http://localhost:5000/api/concierto')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('api-data').innerHTML = `
+          <p><strong>Festival:</strong> ${data.festival}</p>
+          <p><strong>Fecha:</strong> ${data.fecha}</p>
+          <p><strong>Lugar:</strong> ${data.lugar}</p>
+          <p><strong>Capacidad:</strong> ${data.capacidad} personas</p>
+          <p><strong>Estado:</strong> <span class="estado">${data.estado}</span></p>
+        `;
+      })
+      .catch(() => {
+        document.getElementById('api-data').innerHTML =
+          '<p class="error">⚠️ No se pudo conectar con la API backend.</p>';
+      });
+  </script>
+
+</body>
+</html>
